@@ -65,7 +65,10 @@ search_txt_in_image_db=~/.search_txt_in_image.db
 if [[ -v dir ]]
 then
     echo "Starting OCR images..."
+    
+    
     imgs=`find $dir -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}'`
+    OIFS="$IFS" ; IFS=$'\n';
     
     # the number of figures
     imgs1=($imgs)
@@ -76,7 +79,7 @@ then
     temp_figure_file=$(mktemp)
     # touch ${search_txt_in_image_db}
     for img in ${imgs}
-    do
+    do  
         printf "$line_i / $line :  ${img}\n"
 
         printf "${img}\t" >> ${temp_figure_file}
@@ -95,7 +98,7 @@ then
 fi
 
 echo " # figures: "`wc -l ${search_txt_in_image_db}`
-
+echo "============================================="
 ##############################################################################################################
 # search and show your result.
 # use mktemp so the ouput can be cat and view
@@ -104,10 +107,13 @@ if [[ -v target ]]
 then
     temp_result_file=$(mktemp)
 
-    awk -v target="$target" -v ignorecase="${ignorecase=1}"  'BEGIN{IGNORECASE=ignorecase}$0 ~ target{print $1}' ${search_txt_in_image_db} > ${temp_result_file}
+    awk -v target="$target" -v ignorecase="${ignorecase=1}"  'BEGIN{IGNORECASE=ignorecase; FS=OFS="\t"}$0 ~ target{print $1}' ${search_txt_in_image_db} > ${temp_result_file}
 
     cat ${temp_result_file}
+    
     head -${topN=5} ${temp_result_file} | fim -
 
     rm ${temp_result_file}
 fi
+
+IFS="$OIFS" 
