@@ -23,11 +23,11 @@ while getopts ":d:t:ch" opt; do
       ;;
     h )
       echo "Usage:"
-      echo "search_txt_in_image.sh"
+      echo "search_txt_in_image.sh: search txt in images."
       echo "========================================================"
       echo "-d the dir of figures (should be full paths)"
-      echo "-s the searching target."
-      echo "-t topN images to show"
+      # echo "-s the searching target."
+      echo "-t topN images to show. Default 5"
       echo "-c CASE sensitive. Donot use it if wanting IGNORECASE."
       echo "========================================================"
       echo "seach txt in images after OCR the images with -d parameter."
@@ -66,10 +66,11 @@ if [[ -v dir ]]
 then
     echo "Starting OCR images..."
     
-    
     imgs=`find $dir -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}'`
-    OIFS="$IFS" ; IFS=$'\n';
     
+    # deal with filename with space.
+    OIFS="$IFS" ; IFS=$'\n';
+
     # the number of figures
     imgs1=($imgs)
     line=${#imgs1[@]}
@@ -94,7 +95,8 @@ then
 
     # deduplicates
     sort -u ${search_txt_in_image_db} -o ${search_txt_in_image_db}
-    
+
+    IFS="$OIFS"
 fi
 
 echo " # figures: "`wc -l ${search_txt_in_image_db}`
@@ -116,4 +118,3 @@ then
     rm ${temp_result_file}
 fi
 
-IFS="$OIFS" 
