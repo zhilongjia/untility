@@ -41,7 +41,7 @@ while getopts ":d:t:ch" opt; do
       echo "search_txt_in_image.sh 'cohort|gene' "
       echo "========================================================"
       echo "author: zhilongjia@qq.com"
-      echo "9 Sept. 2021"
+      echo "Date: 9 Sept. 2021"
       exit 0  
       ;; 
   esac
@@ -55,6 +55,17 @@ shift $((OPTIND -1))
 # done
 target=$1
 
+# check commands necessary
+##############################################################################################################
+if ! type "tesseract" > /dev/null; then
+  echo "install tesseract before use this script. ref: https://github.com/tesseract-ocr/tessdoc"
+  exit
+fi
+
+if ! type "fim" > /dev/null; then
+  echo "install fim before use this script. ref: http://www.nongnu.org/fbi-improved/"
+  exit
+fi
 
 ##############################################################################################################
 
@@ -100,7 +111,8 @@ then
 fi
 
 echo " # figures: "`wc -l ${search_txt_in_image_db}`
-echo "============================================="
+echo "fim xx.jpg to view"
+echo "=================================================="
 ##############################################################################################################
 # search and show your result.
 # use mktemp so the ouput can be cat and view
