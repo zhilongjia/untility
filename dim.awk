@@ -1,4 +1,6 @@
 #! /usr/bin/awk -f
 #print NR, NF
-BEGIN{FS=" ";print "row No. and col No." }
+# examples:
+#dim.awk -F"," fn
+BEGIN{ print "row No. and col No." }
 END{print NR, NF} 
